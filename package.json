@@ -1,0 +1,19 @@
+{
+  "name": "telegraf-table-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/bumagaga/telegraf-table-test.git",
+  "author": "Philipp <43653566+bumagaga@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "mongoose": "^5.10.5",
+    "telegraf": "^3.38.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.1.1"
+  }
+}
