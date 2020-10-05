@@ -4,18 +4,13 @@ const Extra = require("telegraf/extra");
 const { alphabet } = require("./index");
 
 class Table {
-  constructor(keyboardBtns, { lang, columns, rows } = { lang: "ua", columns: 5, rows: 3 }) {
-    // Добавление в заголовок букв, согласно полученным данным
-    // if (alphabet[lang].length < columns) {
-    //   throw new Error("Количество колонок превышает количество алфавита");
-    // }
-
+  constructor(keyboardBtns, { columns, rows } = { columns: 5, rows: 3 }) {
     this.rows = keyboardBtns || [];
 
     // Создание пустой таблицы
     if (!keyboardBtns) {
       // Добавляем буквы сверху
-      this.addRow(false, ...alphabet[lang].slice(0, columns));
+      this.addRow(false, ...alphabet.slice(0, columns));
 
       // Создаем поле для указанного количества столбиков
       for (let i = 0; i < rows; i++) {
@@ -24,11 +19,15 @@ class Table {
     }
   }
 
-  get SELECTED_CELL() {
+  get TRUE_CELL() {
     return "❎";
   }
 
-  get DISABLED_CELL() {
+  get FALSE_CELL() {
+    return "❌";
+  }
+
+  get NULL_CELL() {
     return " ";
   }
 
@@ -55,18 +54,19 @@ class Table {
     return "table::" + x + "::" + y;
   }
 
+  select(x, y) {
+    const selectedCell = this.rows[x].find((btn) => btn.text.includes(this.TRUE_CELL));
+    if (selectedCell) selectedCell.text = this.NULL_CELL;
+    this.rows[x][y].text = this.TRUE_CELL;
+    return this;
+  }
+
   getColumn(i) {
     const columnItems = new Array();
     this.rows.forEach((row) => {
       if (row[i]) columnItems.push(row[i]);
     });
     return columnItems;
-  }
-
-  toJSON() {
-    return {
-      rows: this.rows,
-    };
   }
 
   toKeyboard() {
