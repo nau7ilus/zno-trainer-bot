@@ -1,0 +1,22 @@
+{
+  "Model": {
+    "scope": "javascript",
+    "prefix": "model",
+    "body": [
+      "const { Schema, model } = require(\"mongoose\");",
+      "",
+      "const TestSchema = new Schema(",
+      "\t{",
+      "\t\t",
+      "\t},",
+      "\t{",
+      "\t\tversionKey: false,",
+      "\t}",
+      ");",
+      "",
+      "module.exports = model(\"\", TestSchema); ",
+      ""
+    ],
+    "description": "Шаблон для новой модели"
+  }
+}
