@@ -109,3 +109,6 @@ package-lock.json
 
 # Environment files
 .env
+
+# Temp files
+sessions.json
