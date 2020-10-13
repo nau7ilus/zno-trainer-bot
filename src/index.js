@@ -66,7 +66,6 @@ bot.action('blank', ({ answerCbQuery, i18n: locales }) => {
 
 bot.startPolling();
 
-bot.telegram.clearUpdates();
 cachegoose(mongoose);
 mongoose.connect(
   process.env.DB_URL,
