@@ -1,7 +1,7 @@
 /* eslint-disable capitalized-comments */
 'use strict';
 
-require('dotenv').config();
+// require('dotenv').config();
 
 const { resolve } = require('path');
 const cachegoose = require('cachegoose');
