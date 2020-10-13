@@ -1,4 +1,6 @@
-const { Schema, model } = require("mongoose");
+'use strict';
+
+const { Schema, model } = require('mongoose');
 
 const TaskSchema = new Schema(
   {
@@ -12,7 +14,7 @@ const TaskSchema = new Schema(
   },
   {
     versionKey: false,
-  }
+  },
 );
 
-module.exports = model("task", TaskSchema);
+module.exports = model('task', TaskSchema);

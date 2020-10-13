@@ -1,6 +1,6 @@
 {
   "name": "zno-trainer-bot",
-  "version": "0.9.1",
+  "version": "1.4",
   "main": "src/index.js",
   "repository": "https://github.com/nieopierzony/table-quiz-bot.git",
   "author": "Philipp <43653566+bumagaga@users.noreply.github.com>",
@@ -13,15 +13,21 @@
     "dev": "nodemon -w src src/index.js"
   },
   "dependencies": {
+    "@mongoosejs/double": "^0.2.0",
     "axios": "^0.20.0",
     "cachegoose": "^8.0.0",
+    "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
     "mongoose": "^5.10.5",
     "telegraf": "^3.38.0",
+    "telegraf-i18n": "^6.6.0",
     "telegraf-session-local": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "nodemon": "^2.0.4",
     "prettier": "^2.1.1"
   }

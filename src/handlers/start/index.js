@@ -1,22 +1,33 @@
-const { mainMenu } = require("../../helpers");
-const User = require("../../models/User");
+'use strict';
 
-module.exports = () => async (ctx) => {
+const { mainMenu, languagesMenu } = require('../../helpers');
+const User = require('../../models/User');
+
+module.exports = () => async ({ i18n, message, replyWithHTML }) => {
   try {
-    // Поиск пользователя в базе данных
-    const user = await User.findOne({ id: ctx.session.id }).cache();
+    // Ищем пользователя в базе данных
+    const user = await User.findOne({ id: message.from.id }).cache();
     if (!user) {
-      await User.create({ id: ctx.session.id });
-    }
-    await ctx.replyWithMarkdown("Добро пожаловать", {
-      reply_markup: { inline_keyboard: mainMenu },
-    });
-  } catch (err) {
-    ctx.replyWithHTML(
-      "<b><code>[⚠️ | Ошибка]</code>\nПроизошла неизвестная ошибка при отправке сообщения." +
-        "Попробуйте еще раз. Если ошибка не пропала, свяжитесь с нами. /feedback</b>"
-    );
+      // Если пользователя нет в базе данных, создаем его
+      await User.create({ id: message.from.id });
 
-    console.error(`[%s] Произошла ошибка при создании таблицы.`, new Date().toTimeString(), err);
+      // Спрашиваем, какой язык использовать
+      replyWithHTML(i18n.t('greeting.firstTime'), {
+        reply_markup: { inline_keyboard: languagesMenu },
+      });
+    } else {
+      // Иначе отправляем простое приветствие с главным меню
+      replyWithHTML(i18n.t('greeting.other'), {
+        reply_markup: { inline_keyboard: mainMenu(i18n) },
+      });
+    }
+  } catch (err) {
+    replyWithHTML(i18n.t('errors.unknown'));
+    console.error(
+      `[%s] Произошла ошибка при использовании команды start. | UserID: %d`,
+      new Date().toTimeString(),
+      message.from.id,
+      err,
+    );
   }
 };
