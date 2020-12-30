@@ -108,3 +108,10 @@ dist
 
 # Temp files
 sessions.json
+.idea
+
+# MongoDB files
+mongodb_tmp/
+
+# Tasks
+tasks/
