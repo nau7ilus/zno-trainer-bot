@@ -6,11 +6,16 @@
   "author": "Philipp <43653566+bumagaga@users.noreply.github.com>",
   "license": "MIT",
   "private": false,
+  "comment": "Before running, make sure you have downloaded Mongo Server https://www.mongodb.com/try/download/community",
   "scripts": {
     "lint": "eslint --ext .js src",
     "lint:fix": "eslint --fix --ext .js src",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -w src src/index.js"
+    "start": "if-env NODE_ENV=production && yarn start:prod || yarn run --silent start:dev",
+    "mongo:prepare": "if not exist \"mongodb_tmp\" mkdir mongodb_tmp",
+    "mongo:start": "yarn mongo:prepare && \"D:/Program Files/MongoDB/Server/4.4/bin/mongod\" --dbpath mongodb_tmp --logappend --logpath nul",
+    "start:dev": "concurrently --kill-others -n 'bot,mongo' -c 'grenn,blue' \"yarn dev\" \"yarn mongo:start\"",
+    "dev": "set DB_URL=mongodb://localhost:27017/winslow-bot&& nodemon -i ./src/helpers/config.json -w ./src",
+    "start:prod": "node ."
   },
   "dependencies": {
     "@mongoosejs/double": "^0.2.0",
@@ -18,12 +23,16 @@
     "cachegoose": "^8.0.0",
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
+    "fastify": "^3.6.0",
+    "fastify-cors": "^4.1.0",
+    "if-env": "^1.0.4",
     "mongoose": "^5.10.5",
     "telegraf": "^3.38.0",
     "telegraf-i18n": "^6.6.0",
     "telegraf-session-local": "^2.0.0"
   },
   "devDependencies": {
+    "concurrently": "^5.3.0",
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-import": "^2.22.1",
