@@ -88,7 +88,10 @@ const parseTasks = async (url, subject) => {
     downloadImage(id, 'task.png', taskImage);
     downloadImage(id, 'explanation.png', explanation);
 
-    data.push({ id, taskImage, explanation, subject, tag });
+    // If we already have task ID in config, don't add it
+    if (!data.some(j => j.id === id)) {
+      data.push({ id, taskImage, explanation, subject, tag });
+    }
   });
 
   // Update config
@@ -113,7 +116,7 @@ const parseAnswers = async tagID => {
 
 module.exports = async () => {
   // Clear old config file content
-  await fs.writeFileSync(`${PATH}/config.json`, '[]');
+  if (!fs.existsSync(`${PATH}/config.json`)) await fs.writeFileSync(`${PATH}/config.json`, '[]');
 
   // Go through all specified URLs
   Object.entries(urls).forEach(_subject => {
