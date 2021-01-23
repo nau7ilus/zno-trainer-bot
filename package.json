@@ -1,6 +1,6 @@
 {
   "name": "zno-trainer-bot",
-  "version": "1.4",
+  "version": "2.0.0-dev",
   "main": "src/index.js",
   "repository": "https://github.com/nieopierzony/table-quiz-bot.git",
   "author": "Philipp <43653566+bumagaga@users.noreply.github.com>",
