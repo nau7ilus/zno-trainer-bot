@@ -12,12 +12,13 @@
     "lint:fix": "eslint --fix --ext .js src",
     "start": "if-env NODE_ENV=production && yarn start:prod || yarn run --silent start:dev",
     "mongo:prepare": "if not exist \"mongodb_tmp\" mkdir mongodb_tmp",
-    "mongo:start": "yarn mongo:prepare && \"D:/Program Files/MongoDB/Server/4.4/bin/mongod\" --dbpath mongodb_tmp --logappend --logpath nul",
+    "mongo:start": "yarn mongo:prepare && \"C:/Program Files/MongoDB/Server/4.4/bin/mongod\" --dbpath mongodb_tmp --logappend --logpath nul",
     "start:dev": "concurrently --kill-others -n 'bot,mongo' -c 'grenn,blue' \"yarn dev\" \"yarn mongo:start\"",
     "dev": "set DB_URL=mongodb://localhost:27017/winslow-bot&& nodemon -i ./src/helpers/config.json -w ./src",
     "start:prod": "node ."
   },
   "dependencies": {
+    "@discordjs/collection": "^0.1.6",
     "@mongoosejs/double": "^0.2.0",
     "axios": "^0.20.0",
     "cachegoose": "^8.0.0",
@@ -27,7 +28,8 @@
     "fastify-cors": "^4.1.0",
     "if-env": "^1.0.4",
     "mongoose": "^5.10.5",
-    "telegraf": "^3.38.0",
+    "readdir": "^1.0.2",
+    "telegraf": "^4.0.1",
     "telegraf-i18n": "^6.6.0",
     "telegraf-session-local": "^2.0.0"
   },

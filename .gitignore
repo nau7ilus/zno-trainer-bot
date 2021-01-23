@@ -112,6 +112,3 @@ sessions.json
 
 # MongoDB files
 mongodb_tmp/
-
-# Tasks
-tasks/
