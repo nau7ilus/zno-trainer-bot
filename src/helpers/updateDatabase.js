@@ -103,9 +103,7 @@ const parseTasks = async (url, subject) => {
 
       ids.push(id);
 
-      const explanation = task.find(`.explanation img`)[0]
-        ? task.find(`.explanation img`)[0].attribs.src
-        : null;
+      const explanation = task.find(`.explanation img`)[0] ? task.find(`.explanation img`)[0].attribs.src : null;
 
       // Download images to local store
       if (taskImage) downloadImage(id, 'task.png', taskImage);
@@ -155,11 +153,7 @@ const answersForTable = taskMarkup => {
     .find('tr')
     .each((i, el) => {
       if (i === 0) return;
-      answers.push(
-        el.children
-          .filter(j => j.name === 'td')
-          .map(j => (j.children[0] ? j.children[0].data : ''), '\n'),
-      );
+      answers.push(el.children.filter(j => j.name === 'td').map(j => (j.children[0] ? j.children[0].data : ''), '\n'));
     });
 
   return answers.map((i, j) => [j + 1, i.indexOf('1')]);
@@ -175,11 +169,9 @@ const TASK_METHODS = {
 const parseAnswers = async (tagID, ids) => {
   try {
     // Do a request to get answers from server
-    const res = await axios.post(
-      `${URL}/users/znotest/tag/`,
-      stringify({ do: 'send_all_serdata', tag_id: tagID }),
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-    );
+    const res = await axios.post(`${URL}/users/znotest/tag/`, stringify({ do: 'send_all_serdata', tag_id: tagID }), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
     if (!res || !res.data) throw new Error('Неудача при запросе ответов');
 
     // Array, where we will store task's data
@@ -191,12 +183,12 @@ const parseAnswers = async (tagID, ids) => {
     const tasks = $('.task-card');
 
     // Go through all tasks and look for answers
+    // eslint-disable-next-line consistent-return
     tasks.each((i, _task) => {
       const task = $(_task);
 
       // Get task type. It will help us in choosing answers find algorhythm
-      const taskType =
-        TASK_TYPES[task.find('.description a[href^="/dovidka/"]')[0].children[0].data];
+      const taskType = TASK_TYPES[task.find('.description a[href^="/dovidka/"]')[0].children[0].data];
 
       // Get task id to link answers in config
       const id = ids[i];
