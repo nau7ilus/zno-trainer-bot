@@ -6,15 +6,38 @@ const { Schema, model } = require('mongoose');
 const UserSchema = new Schema(
   {
     id: { type: Number, required: true, unique: true },
-    answers: { type: Double, default: 0 },
-    askedQuestions: { type: Double, default: 0 },
-    points: { type: Number, default: 0 },
-    joinDate: { type: Date, default: Date.now },
-    incognito: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+    isLanguageSet: { type: Boolean, default: false },
+    stats: {
+      algebra: {
+        totalAsked: { type: Number, default: 0 },
+        correctAnswers: { type: Double, default: 0 },
+        points: { type: Number, default: 0 },
+      },
+      geometry: {
+        totalAsked: { type: Number, default: 0 },
+        correctAnswers: { type: Double, default: 0 },
+        points: { type: Number, default: 0 },
+      },
+      total: {
+        totalAsked: { type: Number, default: 0 },
+        correctAnswers: { type: Double, default: 0 },
+        points: { type: Number, default: 0 },
+      },
+    },
+    settings: {
+      incognito: { type: Boolean, default: false },
+      currentLobby: { type: Number, default: 0 },
+      isAdmin: { type: Boolean, default: false },
+    },
   },
   {
     versionKey: false,
   },
 );
+
+UserSchema.statics.findOneOrCreate = async function findOneOrCreate(condition, doc) {
+  return (await this.findOne(condition)) || this.create(doc);
+};
 
 module.exports = model('user', UserSchema);

@@ -12,22 +12,53 @@ const formatInt = int =>
     .reverse()
     .join('');
 
-const mainMenu = i18n => [
-  [{ text: i18n.t('menus.main.startGame'), callback_data: 'create::false' }],
+const mainMenu = ctx => [
+  [{ text: ctx.i18n.t('menus.start.startGame'), callback_data: 'select::subject' }],
   [
-    { text: i18n.t('menus.main.profile'), callback_data: 'router::profile' },
-    { text: i18n.t('menus.main.rating'), callback_data: 'router::rating' },
+    { text: ctx.i18n.t('menus.start.profile'), callback_data: 'profile' },
+    { text: ctx.i18n.t('menus.start.rating'), callback_data: 'rating' },
   ],
-  [{ text: i18n.t('menus.main.settings'), callback_data: 'router::settings' }],
+  [{ text: ctx.i18n.t('menus.start.settings'), callback_data: 'settings' }],
 ];
 
-const settingsMenu = i18n => [
-  [{ text: i18n.t('menus.settings.dropStats.title'), callback_data: 'router::drop' }],
+const settingsMenu = ctx => [
+  [{ text: ctx.i18n.t('menus.settings.dropStats.title'), callback_data: 'dropstats' }],
   [
-    { text: i18n.t('menus.settings.setLanguage'), callback_data: 'router::languages' },
-    { text: i18n.t('menus.settings.incognito.title'), callback_data: 'router::incognito' },
+    { text: ctx.i18n.t('menus.settings.setLanguage'), callback_data: 'language' },
+    { text: ctx.i18n.t('menus.settings.incognito.title'), callback_data: 'incognito' },
   ],
-  [{ text: i18n.t('menus.main.back'), callback_data: 'router::main' }],
+];
+
+const selectSubject = ctx => [
+  [
+    {
+      text: ctx.i18n.t('select.subjects.total'),
+      callback_data: 'startGame::total',
+    },
+  ],
+  [
+    {
+      text: ctx.i18n.t('select.subjects.algebra'),
+      callback_data: 'select::types::algebra',
+    },
+    {
+      text: ctx.i18n.t('select.subjects.geometry'),
+      callback_data: 'select::types::geometry',
+    },
+  ],
+];
+
+const selectTypes = (ctx, subject) => [
+  [
+    {
+      text: ctx.i18n.t('select.types.competition'),
+      callback_data: `startGame::${subject}`,
+    },
+    {
+      text: ctx.i18n.t('select.types.training'),
+      callback_data: `select::themes::${subject}`,
+    },
+  ],
 ];
 
 const languagesMenu = [
@@ -35,21 +66,62 @@ const languagesMenu = [
   [{ text: '🇺🇦 Українська', callback_data: 'language::uk' }],
 ];
 
+const backButton = (ctx, cb) => [{ text: ctx.i18n.t(`menus.${cb}.back`), callback_data: cb }];
+
 const alphabet = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З'];
 
-/**
- * BUG: Если экспортировать ./ratingMarkup, не получится
- * использовать утилиты из этого файла
- */
+const send = async (ctx, content, keyboard) => {
+  const markup = { reply_markup: { inline_keyboard: keyboard }, parse_mode: 'HTML' };
+
+  try {
+    if (ctx.message) {
+      await ctx.replyWithHTML(content, markup);
+    } else {
+      await ctx.answerCbQuery();
+      await ctx.editMessageText(content, markup);
+    }
+  } catch (err) {
+    if (err.message.includes('message is not modified')) return;
+    console.error(err);
+  }
+};
+
+// Это выглядит страшно. Я бы переписал...
+// Эта функция просто делает объект тем с переводом под текущий язык
+const getThemes = ctx =>
+  Object.fromEntries(
+    Array.from(
+      [
+        [
+          'algebra',
+          [new Array(4), new Array(5), new Array(6), new Array(2)].map(el => Array.from(el, (x, i) => i + 1)),
+        ],
+        ['geometry', [new Array(7), new Array(5)].map(el => Array.from(el, (x, i) => i + 1))],
+      ],
+      k => [
+        k[0],
+        Object.fromEntries(
+          k[1].map((el, i) => [
+            ctx.i18n.t(`themes.${k[0]}.${i}.0`),
+            el.map(j => ctx.i18n.t(`themes.${k[0]}.${i}.${j}`)),
+          ]),
+        ),
+      ],
+    ),
+  );
 
 module.exports = {
   alphabet,
   mainMenu,
   languagesMenu,
+  selectSubject,
+  selectTypes,
+  send,
+  backButton,
   settingsMenu,
   skipTask: require('./skipTask'),
   updateDatabase: require('./updateDatabase'),
   getUserStats: require('./getUserStats'),
-  checkIncognito: require('./checkIncognito'),
   formatInt,
+  getThemes,
 };

@@ -41,9 +41,7 @@ class Table {
     const rowsLength = this.rows.length;
     formattedData.push(Markup.callbackButton(!rowsLength ? ' ' : rowsLength, 'blank'));
     rowData.forEach((btnName, i) => {
-      formattedData.push(
-        Markup.callbackButton(btnName, !rowsLength ? 'blank' : this.cbName(i + 1, rowsLength)),
-      );
+      formattedData.push(Markup.callbackButton(btnName, !rowsLength ? 'blank' : this.cbName(i + 1, rowsLength)));
     });
     this.rows.push([...formattedData.flat()]);
     return this;
