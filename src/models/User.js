@@ -8,6 +8,7 @@ const UserSchema = new Schema(
     id: { type: Number, required: true, unique: true },
     createdAt: { type: Date, default: Date.now },
     isLanguageSet: { type: Boolean, default: false },
+    isFirstRun: { type: Boolean, default: true },
     stats: {
       algebra: {
         totalAsked: { type: Number, default: 0 },

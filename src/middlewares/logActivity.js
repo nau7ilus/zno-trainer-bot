@@ -1,7 +1,15 @@
 'use strict';
 
-const Log = require('../models/Log');
+const { clearCache } = require('cachegoose');
+const User = require('../models/User');
 const Middleware = require('../structures/pieces/Middleware');
+
+const parseHTML = { parse_mode: 'HTML' };
+const channels = {
+  newUsers: -1001372674070,
+  common: -1001340384906,
+  games: -1001467827834,
+};
 
 module.exports = class extends Middleware {
   constructor(...args) {
@@ -9,20 +17,45 @@ module.exports = class extends Middleware {
   }
 
   async run(ctx, next) {
-    // eslint-disable-next-line callback-return
-    next();
-
     try {
       // Узнаем тип действия
       const actionType = ctx.message ? 0 : 1;
+      if (actionType === 0 && !ctx.message.text.startsWith('/')) return;
 
       // Получаем контент команды, исходя из типа отправки
       const commandContent = ctx.message ? ctx.message.text : ctx.update.callback_query.data;
-      const details = ctx.message ? [commandContent.split('/')[1]] : commandContent.split('::');
+      const details = ctx.message ? commandContent.split('/')[1].split(/ +/g) : commandContent.split('::');
+      const btnName = ctx.update.callback_query.message.reply_markup.inline_keyboard
+        .flat()
+        .find(i => i.callback_data === commandContent).text;
 
-      await Log.create({ actionType, userID: ctx.from.id, details });
+      if (ctx.user.isFirstRun) {
+        clearCache(null, { id: ctx.from.id });
+        await User.findOneAndUpdate({ id: ctx.from.id }, { isFirstRun: false });
+
+        ctx.telegram.sendMessage(
+          channels.newUsers,
+          ctx.i18n.t('logs.newUser', { commandContent, actionType, details }),
+          parseHTML,
+        );
+      }
+
+      if (details[0] === 'start' && details[1]?.startsWith('getuser')) {
+        const userID = details[1].split('-')[1];
+        const cmd = ctx.client.handlers.get('getuser');
+        cmd.run(ctx, userID);
+        return;
+      }
+
+      ctx.telegram.sendMessage(
+        channels.common,
+        ctx.i18n.t('logs.common', { commandContent, actionType, btnName, user: ctx.user }),
+        parseHTML,
+      );
     } catch (err) {
       console.error('[Error] Ошибка при добавлении данных в статистику', err);
     }
+
+    next();
   }
 };
