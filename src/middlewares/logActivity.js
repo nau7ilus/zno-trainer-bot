@@ -25,7 +25,7 @@ module.exports = class extends Middleware {
       // Получаем контент команды, исходя из типа отправки
       const commandContent = ctx.message ? ctx.message.text : ctx.update.callback_query.data;
       const details = ctx.message ? commandContent.split('/')[1].split(/ +/g) : commandContent.split('::');
-      const btnName = ctx.update.callback_query.message.reply_markup.inline_keyboard
+      const btnName = ctx.update?.callback_query?.message.reply_markup.inline_keyboard
         .flat()
         .find(i => i.callback_data === commandContent).text;
 
