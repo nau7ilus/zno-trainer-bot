@@ -26,7 +26,7 @@ module.exports = class HandlerStore extends Store {
 
       this.set(storedPiece);
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
     }
     return storedPiece;
   }

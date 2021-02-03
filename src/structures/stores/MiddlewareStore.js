@@ -17,7 +17,7 @@ module.exports = class MiddlewareStore extends Store {
       storedPiece = new Piece(this, file, directory);
       this.client.use(storedPiece.run);
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
     }
 
     this.set(storedPiece);
