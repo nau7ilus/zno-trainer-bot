@@ -66,6 +66,27 @@ const languagesMenu = [
   [{ text: '🇺🇦 Українська', callback_data: 'language::uk' }],
 ];
 
+const nextTaskKeyboard = ctx => [
+  [
+    {
+      text: ctx.i18n.t('tasks.next'),
+      callback_data: `startGame::${ctx.session.lobby}::${ctx.session?.taskTag?.join('::')}`,
+    },
+  ],
+  [
+    {
+      text: ctx.i18n.t('tasks.getExplanation.btnName'),
+      callback_data: `getExplanation::${ctx.session.currentTask.id}`,
+    },
+  ],
+  [
+    {
+      text: ctx.i18n.t(`menus.${ctx.session.backBtn.split('::').slice(0, 3).join('::')}.back`),
+      callback_data: ctx.session.backBtn,
+    },
+  ],
+];
+
 const backButton = (ctx, cb) => [{ text: ctx.i18n.t(`menus.${cb}.back`), callback_data: cb }];
 
 const alphabet = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Є', 'Ж', 'З'];
@@ -74,7 +95,9 @@ const send = async (ctx, content, keyboard) => {
   const markup = { reply_markup: { inline_keyboard: keyboard }, parse_mode: 'HTML' };
 
   try {
-    if (ctx.message) {
+    const hasPhoto = ctx.update?.callback_query?.message?.photo;
+    if (ctx.message || hasPhoto) {
+      if (hasPhoto) await ctx.editMessageReplyMarkup();
       await ctx.replyWithHTML(content, markup);
     } else {
       await ctx.answerCbQuery();
@@ -124,4 +147,5 @@ module.exports = {
   getUserStats: require('./getUserStats'),
   formatInt,
   getThemes,
+  nextTaskKeyboard,
 };

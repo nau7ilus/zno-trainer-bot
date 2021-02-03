@@ -1,7 +1,5 @@
 'use strict';
 
-const Extra = require('telegraf/extra');
-const Markup = require('telegraf/markup');
 const { alphabet } = require('./index');
 
 class Table {
@@ -39,9 +37,9 @@ class Table {
   addRow(...rowData) {
     const formattedData = [];
     const rowsLength = this.rows.length;
-    formattedData.push(Markup.callbackButton(!rowsLength ? ' ' : rowsLength, 'blank'));
+    formattedData.push({ text: !rowsLength ? ' ' : rowsLength, callback_data: 'blank' });
     rowData.forEach((btnName, i) => {
-      formattedData.push(Markup.callbackButton(btnName, !rowsLength ? 'blank' : this.cbName(i + 1, rowsLength)));
+      formattedData.push({ text: btnName, callback_data: !rowsLength ? 'blank' : this.cbName(i + 1, rowsLength) });
     });
     this.rows.push([...formattedData.flat()]);
     return this;
@@ -51,8 +49,10 @@ class Table {
     // Приводим таблицу к виду ответов в базе данных
     const choosenAnswers = this._rowsToDB();
 
+    console.log(choosenAnswers);
+    console.log(rightAnswers);
     // Необходимо отметить все строки
-    if (choosenAnswers.length < this.rows.length - 1) {
+    if (choosenAnswers.length < rightAnswers.length) {
       throw new Error('errors.selectAllRows');
     }
 
@@ -100,7 +100,7 @@ class Table {
   }
 
   cbName(x, y) {
-    return `table::${x}::${y}`;
+    return `selectCell::${x}::${y}`;
   }
 
   select(x, y) {
@@ -119,7 +119,8 @@ class Table {
   }
 
   toKeyboard() {
-    return Extra.markdown().markup(Markup.inlineKeyboard(this.rows));
+    console.log(this.rows);
+    return this.rows;
   }
 }
 
