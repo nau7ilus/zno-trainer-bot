@@ -14,7 +14,7 @@
     "mongo:prepare": "if not exist \"mongodb_tmp\" mkdir mongodb_tmp",
     "mongo:start": "yarn mongo:prepare && \"C:/Program Files/MongoDB/Server/4.4/bin/mongod\" --dbpath mongodb_tmp --logappend --logpath nul",
     "start:dev": "concurrently --kill-others -n 'bot,mongo' -c 'grenn,blue' \"yarn dev\" \"yarn mongo:start\"",
-    "dev": "set DB_URL=mongodb://localhost:27017/winslow-bot&& nodemon -i ./src/helpers/config.json -w ./src",
+    "dev": "set DB_URL=mongodb://localhost:27017/winslow-bot&& nodemon -w ./src",
     "start:prod": "node ."
   },
   "dependencies": {
@@ -29,7 +29,7 @@
     "if-env": "^1.0.4",
     "mongoose": "^5.10.5",
     "readdir": "^1.0.2",
-    "telegraf": "^4.0.1",
+    "telegraf": "3.38.0",
     "telegraf-i18n": "^6.6.0",
     "telegraf-session-local": "^2.0.0"
   },
