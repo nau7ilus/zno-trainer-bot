@@ -1,7 +1,7 @@
 'use strict';
 
 const { clearCache } = require('cachegoose');
-const { send, backButton } = require('../../helpers');
+const { send } = require('../../helpers');
 const User = require('../../models/User');
 const Handler = require('../../structures/pieces/Handler');
 
@@ -14,6 +14,7 @@ module.exports = class extends Handler {
       types: ['command', 'action'],
     });
   }
+  // eslint-disable-next-line consistent-return
   async run(ctx) {
     if (!ctx.session.currentTask) return ctx.replyWithHTML(ctx.i18n.t('tasks.skip.error'));
 
@@ -30,10 +31,25 @@ module.exports = class extends Handler {
 
     ctx.session.currentTask = undefined;
     ctx.session.askedAt = undefined;
-    ctx.session.lobby = undefined;
-    ctx.session.taskTag = undefined;
-    ctx.session.backBtn = undefined;
+    ctx.session.openTaskData = undefined;
 
-    return send(ctx, ctx.i18n.t('tasks.skip.success'), [backButton(ctx, 'select::subject')]);
+    const backBtn = ctx.update?.callback_query?.message.entities
+      ? ctx.update?.callback_query?.message.entities[0].url?.split('t.me/')[1]
+      : ctx.session.backBtn;
+
+    send(ctx, ctx.i18n.t('tasks.skip.success'), [
+      [
+        {
+          text: ctx.i18n.t(`menus.${backBtn ? backBtn.split('::').slice(0, 3).join('::') : 'start'}.back`),
+          callback_data: backBtn ?? 'start',
+        },
+        {
+          text: ctx.i18n.t('tasks.next'),
+          callback_data: `startGame::${ctx.session.lobby}${
+            ctx.session?.taskTag ? `::${ctx.session.taskTag.join('::')}` : ''
+          }`,
+        },
+      ],
+    ]);
   }
 };
