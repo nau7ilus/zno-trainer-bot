@@ -13,9 +13,9 @@ greeting:
     <b>/help</b> - інфо
     <b>/profile</b> - статистика відповідей
     <b>/skip</b> - пропустити завдання
-    <b>/dropstats</b> - очистити свою статистику відповідей
+    <b>/dropstats</b> - обнулити статистику
     <b>/language</b> - змінити мову
-    <b>/feedback</b> - повідомити про баг
+    <b>/feedback</b> - тех.підтримка, PR
 
 menus:
   start:

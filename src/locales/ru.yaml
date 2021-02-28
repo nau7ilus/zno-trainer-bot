@@ -13,9 +13,9 @@ greeting:
     <b>/help</b> - информация о боте
     <b>/profile</b> - статистика пользователя
     <b>/skip</b> - пропустить задание
-    <b>/dropstats</b> - сбросить свою статистику
+    <b>/dropstats</b> - обнулить статистику
     <b>/language</b> - изменить язык
-    <b>/feedback</b> - сообщить о баге
+    <b>/feedback</b> - тех.поддержка, PR
 
 menus:
   checkSubscribe: Проверить подписку
