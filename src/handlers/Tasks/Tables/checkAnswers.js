@@ -25,17 +25,28 @@ module.exports = class extends Handler {
       const points = table.countPoints(ctx.session.currentTask.answer);
       const correctAnswersPercent = (points / ctx.session.currentTask.answer.length) * 100;
 
-      console.log(nextTaskKeyboard(ctx));
       if (correctAnswersPercent >= 100) {
         if (!ctx.session.alreadyAsked) ctx.session.alreadyAsked = [];
         ctx.session.alreadyAsked.push(ctx.session.currentTask.id);
-        ctx.replyWithHTML(ctx.i18n.t('tasks.table.absolutely', { points }), nextTaskKeyboard(ctx));
+        ctx.replyWithHTML(
+          ctx.i18n.t('tasks.table.absolutely', { points, backBtn: ctx.session.backBtn }),
+          nextTaskKeyboard(ctx),
+        );
       } else if (correctAnswersPercent >= 75) {
-        ctx.replyWithHTML(ctx.i18n.t('tasks.table.great', { points }), nextTaskKeyboard(ctx));
+        ctx.replyWithHTML(
+          ctx.i18n.t('tasks.table.great', { points, backBtn: ctx.session.backBtn }),
+          nextTaskKeyboard(ctx),
+        );
       } else if (correctAnswersPercent >= 1) {
-        ctx.replyWithHTML(ctx.i18n.t('tasks.table.ok', { points }), nextTaskKeyboard(ctx));
+        ctx.replyWithHTML(
+          ctx.i18n.t('tasks.table.ok', { points, backBtn: ctx.session.backBtn }),
+          nextTaskKeyboard(ctx),
+        );
       } else {
-        ctx.replyWithHTML(ctx.i18n.t('tasks.table.bad', { points }), nextTaskKeyboard(ctx));
+        ctx.replyWithHTML(
+          ctx.i18n.t('tasks.table.bad', { points, backBtn: ctx.session.backBtn }),
+          nextTaskKeyboard(ctx),
+        );
       }
 
       table.rows.pop();
@@ -58,7 +69,6 @@ module.exports = class extends Handler {
       ctx.session.askedAt = undefined;
       ctx.session.lobby = undefined;
       ctx.session.taskTag = undefined;
-      ctx.session.backBtn = undefined;
     } catch (err) {
       ctx.answerCbQuery(ctx.i18n.t(err.message));
       console.error(err);

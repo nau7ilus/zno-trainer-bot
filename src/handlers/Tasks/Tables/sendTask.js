@@ -19,7 +19,7 @@ module.exports = class extends Handler {
 
     const photoURL = `${process.env.CDN_URL}/${task.id}/task.png`;
     ctx.replyWithPhoto(photoURL, {
-      caption: ctx.i18n.t('tasks.table.question'),
+      // Caption: ctx.i18n.t('tasks.table.question'),
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: [...table.rows, [{ text: ctx.i18n.t('tasks.skip.title'), callback_data: 'skip' }]],

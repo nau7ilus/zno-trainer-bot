@@ -23,14 +23,22 @@ module.exports = class extends Handler {
   // eslint-disable-next-line consistent-return
   run(ctx) {
     ctx.answerCbQuery();
+    const backBtn = ctx.session.backBtn
+      ? ctx.session.backBtn
+      : ctx.update?.callback_query?.message.entities[0].url?.split('t.me/')[1];
 
-    const backBtn = ctx.update.callback_query.message.entities[0].url.split('t.me/')[1];
+    ctx.session.backBtn = backBtn ?? 'start';
 
     // Check if user already has active task
     if (ctx.session.currentTask) {
       return send(ctx, ctx.i18n.t('errors.activeTask'), [
         [{ text: ctx.i18n.t('menus.settings.skipTask'), callback_data: 'skip' }],
-        [{ text: ctx.i18n.t(`menus.${backBtn.split('::').slice(0, 3).join('::')}.back`), callback_data: backBtn }],
+        [
+          {
+            text: ctx.i18n.t(`menus.${backBtn ? backBtn.split('::').slice(0, 3).join('::') : 'start'}.back`),
+            callback_data: backBtn ?? 'start',
+          },
+        ],
       ]);
     }
 
@@ -41,17 +49,16 @@ module.exports = class extends Handler {
       .filter(i => subjectQuery.includes(i.subject))
       .filter(i => (ctx.match[2] ? i.tag[0] === +ctx.match[2] && i.tag[1] === +ctx.match[3] : true))
       .filter(i => i.id !== ctx.session.alreadyAsked);
-    // .filter(i => i.taskType === 1);
+
     const randomTask = tasks[Math.floor(Math.random() * tasks.length)];
 
     ctx.session.currentTask = randomTask;
     ctx.session.askedAt = Date.now();
     ctx.session.lobby = ctx.match[1];
-    ctx.session.backBtn = backBtn;
-    if (ctx.match[2] && ctx.match[3]) {
-      ctx.session.taskTag = [ctx.match[2], ctx.match[3]];
-    }
-    console.log(randomTask);
+    if (ctx.match[2] && ctx.match[3]) ctx.session.taskTag = [ctx.match[2], ctx.match[3]];
+
+    ctx.client.saveSession(ctx);
+
     const theme = ctx.i18n.t(
       `themes.${Object.keys(subjectIDs)[randomTask.subject]}.${randomTask.tag[0]}.${randomTask.tag[1] + 1}`,
     );
@@ -65,6 +72,8 @@ module.exports = class extends Handler {
       }),
       parseHTML,
     );
+
+    ctx.editMessageReplyMarkup();
 
     if (randomTask.taskType === Tasks.Table) ctx.client.handlers.get('sendTableTask').run(ctx, randomTask);
     else if (randomTask.taskType === Tasks.Open) ctx.client.handlers.get('sendOpenTask').run(ctx, randomTask);
