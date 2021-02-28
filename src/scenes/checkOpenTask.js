@@ -53,7 +53,7 @@ module.exports = class extends Scene {
       const givenAnswer = ctx.message.text;
       const validAnswer = ctx.scene.session.openTask.validMessage(givenAnswer);
       if (typeof validAnswer === 'string') {
-        ctx.scene.session.openTask.unselectAnswer();
+        ctx.scene.session.openTask.unselectAnswer(ctx.session.openTaskData.match[1]);
         editMessageMarkup(ctx, ctx.scene.session.openTask.keyboard.reply_markup);
         return ctx.replyWithHTML(ctx.i18n.t(validAnswer));
       }
