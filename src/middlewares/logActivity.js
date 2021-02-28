@@ -19,12 +19,12 @@ module.exports = class extends Middleware {
   async run(ctx, next) {
     try {
       // Узнаем тип действия
-      const actionType = ctx.message ? 0 : 1;
-      if (actionType === 0 && !ctx.message.text.startsWith('/')) return;
+      const actionType = ctx.update.message ? 0 : 1;
+      if (actionType === 0 && !ctx.update.message.text.startsWith('/')) return;
 
       // Получаем контент команды, исходя из типа отправки
-      const commandContent = ctx.message ? ctx.message.text : ctx.update.callback_query.data;
-      const details = ctx.message ? commandContent.split('/')[1].split(/ +/g) : commandContent.split('::');
+      const commandContent = ctx.update.message ? ctx.update.message.text : ctx.update.callback_query.data;
+      const details = ctx.update.message ? commandContent.split('/')[1].split(/ +/g) : commandContent.split('::');
       const btnName = ctx.update?.callback_query?.message.reply_markup.inline_keyboard
         .flat()
         .find(i => i.callback_data === commandContent).text;
