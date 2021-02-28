@@ -18,19 +18,19 @@ module.exports = class extends Handler {
         correctAnswersRatio: ((s.algebra.correctAnswers / s.algebra.totalAsked) * 100).toFixed(1),
         points: formatInt(s.algebra.points),
         totalAsked: formatInt(s.algebra.totalAsked),
-        correctAnswers: formatInt(s.algebra.correctAnswers),
+        correctAnswers: formatInt(Math.round(s.algebra.correctAnswers)),
       },
       geometry: {
         correctAnswersRatio: ((s.geometry.correctAnswers / s.geometry.totalAsked) * 100).toFixed(1),
         points: formatInt(s.geometry.points),
         totalAsked: formatInt(s.geometry.totalAsked),
-        correctAnswers: formatInt(s.geometry.correctAnswers),
+        correctAnswers: formatInt(Math.round(s.geometry.correctAnswers)),
       },
       total: {
         correctAnswersRatio: ((s.total.correctAnswers / s.total.totalAsked) * 100).toFixed(1),
         points: formatInt(s.total.points),
         totalAsked: formatInt(s.total.totalAsked),
-        correctAnswers: formatInt(s.total.correctAnswers),
+        correctAnswers: formatInt(Math.round(s.total.correctAnswers)),
       },
     };
 
