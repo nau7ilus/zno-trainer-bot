@@ -55,9 +55,9 @@ module.exports = class extends Handler {
         const bCorAns = b.stats[subject].correctAnswers;
 
         if (aPoints === bPoints) {
-          return aCorAns < bCorAns ? -1 : aCorAns > bCorAns ? 1 : 0;
+          return aCorAns < bCorAns ? 1 : aCorAns > bCorAns ? -1 : 0;
         } else {
-          return aPoints < bPoints ? -1 : 1;
+          return aPoints < bPoints ? 1 : -1;
         }
       })
       .slice(10 * page, 10 * page + 10);
