@@ -2,7 +2,7 @@
 
 const { alphabet } = require('./index');
 
-class Table {
+module.exports = class Table {
   constructor(options = {}) {
     this.rows = options.keyboardBtns || [];
 
@@ -47,11 +47,9 @@ class Table {
 
   countPoints(rightAnswers) {
     // Приводим таблицу к виду ответов в базе данных
-    const choosenAnswers = this._rowsToDB();
+    const choosenAnswers = this.rowsToDB();
 
-    console.log(choosenAnswers);
-    console.log(rightAnswers);
-    // Необходимо отметить все строки
+    // Необходимо отметить все строки toKeyboard
     if (choosenAnswers.length < rightAnswers.length) {
       throw new Error('errors.selectAllRows');
     }
@@ -59,7 +57,7 @@ class Table {
     // Сверяем ответы и считаем баллы
     let points = 0;
     choosenAnswers.forEach((answer, i) => {
-      if (answer[0] === rightAnswers[i][0] && answer[1] === rightAnswers[i][1]) {
+      if (answer[0] === rightAnswers[i][0] && answer[1] === rightAnswers[i][1] + 1) {
         points += 1;
       }
     });
@@ -67,7 +65,7 @@ class Table {
     return points;
   }
 
-  _rowsToDB() {
+  rowsToDB() {
     const choosenAnswers = [];
     this.rows.forEach((row, y) => {
       row.forEach((cell, x) => {
@@ -81,19 +79,17 @@ class Table {
 
   writeAnswers(rightAnswers) {
     // Приводим таблицу к виду ответов в базе данных
-    const choosenAnswers = this._rowsToDB();
+    const choosenAnswers = this.rowsToDB();
 
     // Убираем для каждого элемента колбек информацию
     this.rows.forEach(a => a.forEach(b => (b.callback_data = 'blank')));
-
     choosenAnswers.forEach((answer, i) => {
       const cell = this.rows[answer[0]][answer[1]];
-      if (answer[0] === rightAnswers[i][0] && answer[1] === rightAnswers[i][1]) {
+      if (answer[0] === rightAnswers[i][0] && answer[1] === rightAnswers[i][1] + 1) {
         cell.text = this.SELECTED_CELL;
       } else if (cell.text === this.SELECTED_CELL) {
         cell.text = this.WRONG_CELL;
-        // eslint-disable-next-line capitalized-comments
-        this.rows[answer[0]][rightAnswers[i][1]].text = this.TIP_CELL;
+        this.rows[answer[0]][rightAnswers[i][1] + 1].text = this.TIP_CELL;
       }
     });
     return this;
@@ -117,11 +113,4 @@ class Table {
     });
     return columnItems;
   }
-
-  toKeyboard() {
-    console.log(this.rows);
-    return this.rows;
-  }
-}
-
-module.exports = Table;
+};
