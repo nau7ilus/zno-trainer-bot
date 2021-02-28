@@ -16,7 +16,7 @@ module.exports = class UpdateStore extends Store {
       const Piece = require(fileLocation);
       storedPiece = new Piece(this, file, directory);
       if (!storedPiece.type) throw new Error('Не указан тип события');
-      this.client.on(storedPiece.type, storedPiece.run.bind());
+      this.client.on(storedPiece.type, storedPiece.run);
     } catch (err) {
       console.error(err);
     }

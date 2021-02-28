@@ -5,21 +5,25 @@ const Collection = require('@discordjs/collection');
 const { Telegraf } = require('telegraf');
 
 const TelegrafI18n = require('telegraf-i18n');
+const TelegrafQuestion = require('telegraf-question').default;
 const LocalSession = require('telegraf-session-local');
+const Stage = require('telegraf/stage');
 
 const HandlerStore = require('./stores/HandlerStore');
 const MiddlewareStore = require('./stores/MiddlewareStore');
-const UpdateStore = require('./stores/UpdateStore');
+const SceneStore = require('./stores/SceneStore');
 
 const i18n = new TelegrafI18n({
   useSession: true,
-  defaultLanguage: 'uk',
+  defaultLanguage: 'ru',
   defaultLanguageOnMissing: true,
   directory: resolve(__dirname, '../locales'),
   templateData: {
     pluralize: TelegrafI18n.pluralize,
   },
 });
+
+const session = new LocalSession({ database: 'sessions.json', storage: LocalSession.storageFileSync });
 
 module.exports = class Client extends Telegraf {
   constructor(options) {
@@ -28,11 +32,10 @@ module.exports = class Client extends Telegraf {
 
     this.middlewares = new MiddlewareStore(this);
     this.handlers = new HandlerStore(this);
-    this.events = new UpdateStore(this);
+    this.scenes = new SceneStore(this);
 
     this.registerStore(this.middlewares);
     this.registerStore(this.handlers);
-    this.registerStore(this.events);
 
     const pieceDirectory = join(__dirname, '../');
     for (const store of this.stores.values()) store.registerPieceDirectory(pieceDirectory);
@@ -41,6 +44,7 @@ module.exports = class Client extends Telegraf {
 
     this.use(new LocalSession({ database: 'sessions.json' }).middleware());
     this.use(i18n.middleware());
+    this.use(TelegrafQuestion());
 
     this.context.client = this;
     this.login();
@@ -51,7 +55,19 @@ module.exports = class Client extends Telegraf {
     return this;
   }
 
+  async loadScenes() {
+    const pieceDirectory = join(__dirname, '../');
+    this.scenes.registerPieceDirectory(pieceDirectory);
+    console.log(`[Loader] Загружено ${await this.scenes.loadAll()} сцен`);
+
+    const stage = new Stage();
+    this.scenes.map(i => i.run()).forEach(i => stage.register(i));
+    this.use(stage.middleware());
+  }
+
   async login(token) {
+    await this.loadScenes();
+
     const loaded = await Promise.all(
       this.stores.map(async store => `[Loader] Загружено ${await store.loadAll()} ${store.names[1]}.`),
     ).catch(err => {
@@ -67,12 +83,13 @@ module.exports = class Client extends Telegraf {
     return this;
   }
 
-  clearUpdates() {
-    return this.telegram
-      .getUpdates(0, 100, -1)
-      .then(updates =>
-        updates.length > 0 ? this.telegram.getUpdates(0, 100, updates[updates.length - 1].update_id + 1) : [],
-      );
+  async clearUpdates() {
+    const updates = await this.telegram.getUpdates(0, 100, -1);
+    return updates.length > 0 ? this.telegram.getUpdates(0, 100, updates[updates.length - 1].update_id + 1) : [];
+  }
+
+  saveSession(ctx) {
+    session.saveSession(session.options.getSessionKey(ctx), ctx.session);
   }
 
   isDev(id) {
