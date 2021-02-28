@@ -102,6 +102,7 @@ module.exports = class OpenTask {
 
   toJSON() {
     return {
+      match: this.ctx.match,
       message: this.message,
       task: this.task,
     };
