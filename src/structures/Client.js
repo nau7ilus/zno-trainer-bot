@@ -5,7 +5,6 @@ const Collection = require('@discordjs/collection');
 const { Telegraf } = require('telegraf');
 
 const TelegrafI18n = require('telegraf-i18n');
-const TelegrafQuestion = require('telegraf-question').default;
 const LocalSession = require('telegraf-session-local');
 const Stage = require('telegraf/stage');
 
@@ -44,7 +43,6 @@ module.exports = class Client extends Telegraf {
 
     this.use(new LocalSession({ database: 'sessions.json' }).middleware());
     this.use(i18n.middleware());
-    this.use(TelegrafQuestion());
 
     this.context.client = this;
     this.login();
