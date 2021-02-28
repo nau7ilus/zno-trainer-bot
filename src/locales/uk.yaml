@@ -9,12 +9,13 @@ greeting:
     👋 І знову привіт, <b>${from.first_name}</b>!
 
     <b>Мої команди:</b>
-    <b>/start</b> - Головне меню
-    <b>/help</b> - Інфо
-    <b>/profile</b> - Статистика відповідей
-    <b>/skip</b> - Пропустити завдання
-    <b>/dropstats</b> - Очистити свою статистику відповідей
-    <b>/language</b> - Змінити мову
+    <b>/start</b> - головне меню
+    <b>/help</b> - інфо
+    <b>/profile</b> - статистика відповідей
+    <b>/skip</b> - пропустити завдання
+    <b>/dropstats</b> - очистити свою статистику відповідей
+    <b>/language</b> - змінити мову
+    <b>/feedback</b> - повідомити про баг
 
 menus:
   start:
@@ -34,6 +35,34 @@ menus:
       on: Увімкнути інкогніто
       off: Вимкнути інкогніто
     skipTask: 🤷🏻‍♂️ Пропустити тест
+  select::subject:
+    back: « Назад до вибору предмета
+  select::types::algebra:
+    back: « Вибір теми по алгебрі
+  select::types::geometry:
+    back: « Вибір теми по геометрії
+  select::themes::algebra:
+    back: « Вибір теми по алгебрі
+  select::themes::geometry:
+    back: « Вибір теми по геометрії
+  rating:
+    back: « Назад
+
+select:
+  subjects:
+    message: Вибір предмета<a href="t.me/${secret}">&#8203;</a>
+    algebra: 🧮 Алгебра
+    geometry: 📐 Геометрія
+    total: 📓 Загальний (Алгебра + Геометрія)
+  types:
+    message: Виберіть формат завдань\n<a href="t.me/${secret}">&#8203;</a>
+    competition: 📊 Змагання
+    training: 📚 Практика
+  themes:
+    message: |
+      Оберіть тему, яка вас цікавить:
+      <a href="t.me/${secret}">&#8203;</a>
+      ${themes.map((t, i) => '<b>🔸 ' + (i + 1) + '</b>: ' + t).join('\n')}
 
 feedback:
   message: ❔ Якщо у тебе є питання по роботі Боту, ідеї (пропозиції) для покращення або цікавить співпраця (реклама), напиши нам
@@ -42,6 +71,7 @@ feedback:
 
 tasks:
   table:
+    checkAnswers: 📚 Перевірити відповіді
     absolutely: 👍 Абсолютно вірно! Всі пари відповідей  - <b>вірні</b>, отримуєш <b>${pluralize(points, 'бал', 'бали', 'балів')}</b>!
     great: 😄 Чудово! Ти співставив майже всі пари, отримуєш <b>${pluralize(points, 'бал', 'бали', 'балів')}</b>!
     ok: 😉 Добре! Продовжуй далі, отримуєш <b>${pluralize(points, 'бал', 'бали', 'балів')}</b>!
@@ -54,10 +84,24 @@ tasks:
     success: ✅ Завдання пропущено
     error: ⚠️ Немає активного завдання
     title: Пропустити завдання »
+  open:
+    noAnswer: Вказати відповідь
+    checkAnswers: Перевірити »
+    selectedAnswer: Очікується...
+    correct: 😄 Вірно
+    half: 🤷‍♂️ Правильно вказано тільки одна відповідь
+    incorrect: 😯 Всі відповіді невірні.
+    listenAnswer:
+      enter: Вкажіть відповідь в новому повідомленні
+  getExplanation:
+    btnName: 💬 Розв‘язок
+    message: |
+      Коментар до завдання:
+        <a href="${CDN_URL}/${taskID}/explanation.png">&#8203;</a>
 
 profile:
   stats: |
-    <b>💁 Информация о профиле:</b>
+    <b>💁 Інформація про профиль:</b>
 
     <b>Нік:</b> <code>${from.first_name ? from.first_name : Неизвестно}</code>
     <b>Приєднався до нас:</b>  <code>${user.createdAt.toLocaleDateString('ru',{
@@ -71,21 +115,30 @@ profile:
     <b>Задано питань:</b> <code>${data.algebra.totalAsked}</code>
     <b>З яких правильні відповіді:</b> <code>${data.algebra.correctAnswers} (${isNaN(data.algebra.correctAnswersRatio) ? 0 : data.algebra.correctAnswersRatio}%)</code>
 
-      📐 <b>Геометрия:</b>
+      📐 <b>Геометрія:</b>
     <b>Бали:</b> <code>${data.geometry.points}</code>
     <b>Задано питань:</b> <code>${data.geometry.totalAsked}</code>
     <b>З яких правильні відповіді:</b> <code>${data.geometry.correctAnswers} (${isNaN(data.geometry.correctAnswersRatio) ? 0 : data.geometry.correctAnswersRatio}%)</code>
 
-      📓 <b>Общая статистика:</b>
+      📓 <b>Загальна статистика:</b>
     <b>Бали:</b> <code>${data.total.points}</code>
     <b>Задано питань:</b> <code>${data.total.totalAsked}</code>
-    <b>З яких правильні відповід:</b> <code>${data.total.correctAnswers} (${isNaN(data.total.correctAnswersRatio) ? 0 : data.total.correctAnswersRatio}%)</code>
+    <b>З яких правильні відповіді:</b> <code>${data.total.correctAnswers} (${isNaN(data.total.correctAnswersRatio) ? 0 : data.total.correctAnswersRatio}%)</code>
 
 rating:
+  selectLobby: Вибір предмета
+  total: 📓 Загальний рейтинг
+  algebra: 🧮 Алгебра
+  geometry: 📐 Геометрія
   incognito: <i>Інкогніто</i>
+  subjects:
+    total: загальному рейтингу
+    algebra: алгебрі
+    geometry: геометрії
+  pageError: Ви не можете перейти на цю сторінку
   markup: |
-    <b>🏅 ТОП учасників</b>
-    Нікнейм — Бали | % Правильних відповідей
+    <b>ТОП учасників по ${subjectName}</b>
+    Нік — Бали | % Правильних відповідей
 
     ${rating.join("\n")}
     <b>————————————————</b>
@@ -129,15 +182,27 @@ help: |
 errors:
   nothingThere: Ця кнопка неактивна
   unknown: |
-    <b><code>[⚠️|Помилка]</code>
+    <b><code>[⚠️| Помилка]</code>
     Невідома помилка, при відправленні повідомлення. Спробуйте знову, якщо помилка не зникла, напишіть нам. /feedback</b>
   createTask: |
-    <b><code>[⚠️|Помилка]</code>
+    <b><code>[⚠️| Помилка]</code>
     Помилка при пошуку нового завдання. Спробуйте знову. Якщо помилка не зникла, напишіть нам /feedback</b>
   activeTask: |
-    <b><code>[⚠️|Помилка]</code>
+    <b><code>[⚠️| Помилка]</code>
     Спочатку розв‘яжіть попереднє завдання</b>
   selectAllRows: Відмічені не всі строки відповідей
+  tasks:
+    open:
+      tooManyArguments: Занадто багато аргументів
+      invalidArgument: Один з аргументів вказан невірно
+      noAnswers: Отримно не всі відповіді
+      timeLeft: Час очікування закінчився
+  requiredFollow: |
+    ✅ Для того, щоб запустити бота, підпишись на наш канал ${dontFollowed.map(i => '<b><a href="https://t.me/' + i.username + '">@' + i.username + '</a></b>').join(', ')}
+    <b>У ньому ми публікуємо все про ЗНО з математики і рейтинги учасників бота</b>
+  commandNotFound: |
+    <b><code>[⚠️ | Помилка]</code>
+    Невідома помилка, при відправленні повідомлення. Спробуйте знову, якщо помилка не зникла, напишіть нам - /feedback</b>
 
 themes:
   algebra:
@@ -183,3 +248,29 @@ themes:
       3: Піраміда
       4: Тіла обертання
       5: Координати та вектори у просторі
+
+logs:
+  newUser: |
+    ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
+
+    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ru</code>
+    📕 Реферальный код: <code>${details[1] ?? 'Не указан'}</code>
+    📋 Команда: <code>${actionType === 0 ? 'сообщение' : 'нажатие по кнопке'} - ${commandContent ?? 'Не указано'}</code>
+  common: |
+    ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
+
+    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ru</code>
+    📋 Команда: <code>${actionType === 0 ? 'сообщение' : 'нажатие по кнопке - ' + btnName} - ${commandContent ?? 'Не указано'}</code>
+  newGame: |
+    ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
+
+    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ru</code>
+    <b><code>🆔 - ${randomTask.id} - ${randomTask.subject === 1 ? '🧮 Алгебра' : '📐 Геометрия'} - ${theme}</code></b>
+    📋 Ответ: <b>${randomTask.taskType === 0 ? alphabet[randomTask.answer] : randomTask.taskType === 1 ? 'Для этого типа задания ответов не будет' : randomTask.taskType === 2 ? randomTask.answer : randomTask.answer.join(' и ')}</b>
+    <a href="${CDN_URL + '/' + randomTask.id + '/task.png'}">&#8203;</a>
+  skipGame: |
+    ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
+
+    <b>Задание пропущено</b>
+    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ru</code>
+    <b><code>🆔 - ${task.id} - ${task.subject === 1 ? '🧮 Алгебра' : '📐 Геометрия'}</code></b>
