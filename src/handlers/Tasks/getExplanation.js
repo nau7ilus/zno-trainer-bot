@@ -1,6 +1,6 @@
 'use strict';
 
-const { send, backButton } = require('../../helpers');
+const { backButton } = require('../../helpers');
 const Handler = require('../../structures/pieces/Handler');
 
 module.exports = class extends Handler {
@@ -11,8 +11,10 @@ module.exports = class extends Handler {
     });
   }
   run(ctx) {
-    return send(ctx, ctx.i18n.t('', { CDN_URL: process.env.CDN_URL, taskID: ctx.match[1] }), [
-      backButton(ctx, 'start'),
-    ]);
+    ctx.answerCbQuery();
+    return ctx.replyWithHTML(
+      ctx.i18n.t('tasks.getExplanation.message', { CDN_URL: process.env.CDN_URL, taskID: ctx.match[1] }),
+      [backButton(ctx, 'start')],
+    );
   }
 };
