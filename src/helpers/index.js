@@ -66,26 +66,32 @@ const languagesMenu = [
   [{ text: '🇺🇦 Українська', callback_data: 'language::uk' }],
 ];
 
-const nextTaskKeyboard = ctx => [
-  [
-    {
-      text: ctx.i18n.t('tasks.next'),
-      callback_data: `startGame::${ctx.session.lobby}::${ctx.session?.taskTag?.join('::')}`,
-    },
-  ],
-  [
-    {
-      text: ctx.i18n.t('tasks.getExplanation.btnName'),
-      callback_data: `getExplanation::${ctx.session.currentTask.id}`,
-    },
-  ],
-  [
-    {
-      text: ctx.i18n.t(`menus.${ctx.session.backBtn.split('::').slice(0, 3).join('::')}.back`),
-      callback_data: ctx.session.backBtn,
-    },
-  ],
-];
+const nextTaskKeyboard = ctx => ({
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: ctx.i18n.t('tasks.getExplanation.btnName'),
+          callback_data: `getExplanation::${ctx.session.currentTask.id}`,
+        },
+        {
+          text: ctx.i18n.t('tasks.next'),
+          callback_data: `startGame::${ctx.session.lobby}${
+            ctx.session?.taskTag ? `::${ctx.session.taskTag.join('::')}` : ''
+          }`,
+        },
+      ],
+      [
+        {
+          text: ctx.session.backBtn
+            ? ctx.i18n.t(`menus.${ctx.session.backBtn.split('::').slice(0, 3).join('::')}.back`)
+            : ctx.i18n.t('menus.start.back'),
+          callback_data: ctx.session.backBtn ?? 'start',
+        },
+      ],
+    ],
+  },
+});
 
 const backButton = (ctx, cb) => [{ text: ctx.i18n.t(`menus.${cb}.back`), callback_data: cb }];
 
@@ -142,9 +148,7 @@ module.exports = {
   send,
   backButton,
   settingsMenu,
-  skipTask: require('./skipTask'),
   updateDatabase: require('./updateDatabase'),
-  getUserStats: require('./getUserStats'),
   formatInt,
   getThemes,
   nextTaskKeyboard,

@@ -15,6 +15,9 @@ module.exports = class extends Handler {
   async run(ctx) {
     if (!ctx.session.currentTask) return ctx.replyWithHTML(ctx.i18n.t('tasks.skip.error'));
 
+    ctx.answerCbQuery();
+    ctx.editMessageReplyMarkup();
+
     if (+ctx.match[1] === ctx.session.currentTask.answer) {
       await User.findOneAndUpdate(
         { id: ctx.from.id },
@@ -29,33 +32,17 @@ module.exports = class extends Handler {
 
       if (!ctx.session.alreadyAsked) ctx.session.alreadyAsked = [];
       ctx.session.alreadyAsked.push(ctx.session.currentTask.id);
-
-      ctx.replyWithHTML(ctx.i18n.t('tasks.simple.right', { answer: alphabet[+ctx.match[1]] }), {
-        reply_markup: [
-          [
-            {
-              text: ctx.i18n.t('tasks.next'),
-              callback_data: `startGame::${ctx.session.lobby}::${ctx.session?.taskTag?.join('::')}`,
-            },
-          ],
-          [
-            {
-              text: ctx.i18n.t('tasks.getExplanation.btnName'),
-              callback_data: `getExplanation::${ctx.session.currentTask.id}`,
-            },
-          ],
-          [
-            {
-              text: ctx.i18n.t(`menus.${ctx.session.backBtn.split('::').slice(0, 3).join('::')}.back`),
-              callback_data: ctx.session.backBtn,
-            },
-          ],
-        ],
-      });
+      ctx.replyWithHTML(
+        ctx.i18n.t('tasks.simple.right', { answer: alphabet[+ctx.match[1]], backBtn: ctx.session.backBtn }),
+        nextTaskKeyboard(ctx),
+      );
     } else {
       await User.findOneAndUpdate({ id: ctx.from.id }, { $inc: { [`stats.${ctx.session.lobby}.totalAsked`]: 1 } });
       ctx.replyWithHTML(
-        ctx.i18n.t('tasks.simple.wrong', { rightAnswer: alphabet[ctx.session.currentTask.answer] }),
+        ctx.i18n.t('tasks.simple.wrong', {
+          rightAnswer: alphabet[ctx.session.currentTask.answer],
+          backBtn: ctx.session.backBtn,
+        }),
         nextTaskKeyboard(ctx),
       );
     }
@@ -64,6 +51,5 @@ module.exports = class extends Handler {
     ctx.session.askedAt = undefined;
     ctx.session.lobby = undefined;
     ctx.session.taskTag = undefined;
-    ctx.session.backBtn = undefined;
   }
 };
