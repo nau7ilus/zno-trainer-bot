@@ -35,7 +35,7 @@ module.exports = class extends Scene {
 
     scene.leave(ctx => {
       if (ctx.scene.session.timeLeft) {
-        ctx.scene.session.openTask.unselectAnswer(ctx.match[1]);
+        ctx.scene.session.openTask.unselectAnswer(ctx.session.openTaskData.match[1]);
         editMessageMarkup(ctx, ctx.session.openTask.keyboard.reply_markup);
         ctx.replyWithHTML(ctx.i18n.t('errors.tasks.open.timeLeft'));
       }
@@ -45,7 +45,7 @@ module.exports = class extends Scene {
       if (ctx.scene.session.sceneWillDie < Date.now()) return ctx.scene.leave();
 
       if (!ctx.message) {
-        ctx.scene.session.openTask.unselectAnswer(ctx.match[1]);
+        ctx.scene.session.openTask.unselectAnswer(ctx.session.openTaskData.match[1]);
         editMessageMarkup(ctx, ctx.scene.session.openTask.keyboard.reply_markup);
         return ctx.replyWithHTML(ctx.i18n.t('errors.tasks.open.timeLeft'));
       }
@@ -53,7 +53,7 @@ module.exports = class extends Scene {
       const givenAnswer = ctx.message.text;
       const validAnswer = ctx.scene.session.openTask.validMessage(givenAnswer);
       if (typeof validAnswer === 'string') {
-        ctx.scene.session.openTask.unselectAnswer(ctx.match[1]);
+        ctx.scene.session.openTask.unselectAnswer(ctx.session.openTaskData.match[1]);
         editMessageMarkup(ctx, ctx.scene.session.openTask.keyboard.reply_markup);
         return ctx.replyWithHTML(ctx.i18n.t(validAnswer));
       }

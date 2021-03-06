@@ -28,8 +28,6 @@ const UserSchema = new Schema(
     },
     settings: {
       incognito: { type: Boolean, default: false },
-      currentLobby: { type: Number, default: 0 },
-      isAdmin: { type: Boolean, default: false },
     },
   },
   {
@@ -41,4 +39,4 @@ UserSchema.statics.findOneOrCreate = async function findOneOrCreate(condition, d
   return (await this.findOne(condition)) || this.create(doc);
 };
 
-module.exports = model('user', UserSchema);
+module.exports = model('new-users', UserSchema);

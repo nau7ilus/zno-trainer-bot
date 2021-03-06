@@ -2,7 +2,7 @@
 
 const Middleware = require('../structures/pieces/Middleware');
 
-const requiredChannels = [-1001420705008];
+const requiredChannels = [-1001319499289];
 
 module.exports = class extends Middleware {
   constructor(...args) {
