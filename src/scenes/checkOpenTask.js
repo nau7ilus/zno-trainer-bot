@@ -50,7 +50,7 @@ module.exports = class extends Scene {
         return ctx.replyWithHTML(ctx.i18n.t('errors.tasks.open.timeLeft'));
       }
 
-      const givenAnswer = ctx.message.text;
+      const givenAnswer = ctx.message.text.replace(/,/g, '.');
       const validAnswer = ctx.scene.session.openTask.validMessage(givenAnswer);
       if (typeof validAnswer === 'string') {
         ctx.scene.session.openTask.unselectAnswer(ctx.session.openTaskData.match[1]);
