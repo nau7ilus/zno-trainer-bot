@@ -13,18 +13,15 @@ module.exports = class extends Handler {
 
   async run(ctx, userID) {
     if (!userID || ![546886852, 409482221].includes(ctx.from.id)) return;
-
-    const activeUsers = [];
+    let activeUsers = 0;
     for await (const user of ctx.users) {
       // eslint-disable-next-line no-empty-function
-      const data = await ctx.telegram.getChat(user.id).catch(() => {});
+      const data = await ctx.telegram.sendChatAction(user.id, 'typing').catch(err => {});
       if (data) {
-        console.log(data);
-        activeUsers.push(data);
+        activeUsers += 1;
       }
     }
 
     console.log(activeUsers);
-    console.log(activeUsers.length);
   }
 };
