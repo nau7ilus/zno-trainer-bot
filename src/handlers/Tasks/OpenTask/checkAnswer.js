@@ -35,18 +35,19 @@ module.exports = class extends Handler {
       openTask.deactivateButtons();
       ctx.editMessageReplyMarkup(openTask.keyboard.reply_markup);
 
-      clearCache(null, { id: ctx.from.id });
-      await User.findOneAndUpdate(
-        { id: ctx.from.id },
-        {
-          $inc: {
-            [`stats.${ctx.session.lobby}.totalAsked`]: 1,
-            [`stats.${ctx.session.lobby}.correctAnswers`]: correctAnswers.length / openTask.taskAnswers.length,
-            [`stats.${ctx.session.lobby}.points`]: correctAnswers.length,
+      if (!ctx.session.taskTag) {
+        clearCache(null, { id: ctx.from.id });
+        await User.findOneAndUpdate(
+          { id: ctx.from.id },
+          {
+            $inc: {
+              [`stats.${ctx.session.lobby}.totalAsked`]: 1,
+              [`stats.${ctx.session.lobby}.correctAnswers`]: correctAnswers.length / openTask.taskAnswers.length,
+              [`stats.${ctx.session.lobby}.points`]: correctAnswers.length,
+            },
           },
-        },
-      );
-
+        );
+      }
       ctx.session.openTaskData = undefined;
       ctx.session.currentTask = undefined;
       ctx.session.askedAt = undefined;
@@ -55,7 +56,7 @@ module.exports = class extends Handler {
 
       ctx.client.saveSession(ctx);
     } catch (err) {
-      console.error(err.message);
+      if (!err.message.includes('noAnswers')) console.error(err);
       ctx.answerCbQuery(ctx.i18n.t(err.message));
     }
   }
