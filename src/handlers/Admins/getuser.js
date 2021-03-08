@@ -11,8 +11,20 @@ module.exports = class extends Handler {
     });
   }
 
-  run(ctx, userID) {
-    if (!userID || ![].includes(ctx.from.id)) return;
-    send(ctx, ctx.i18n.t('getUser', { userID }), [backButton(ctx, 'start')]);
+  async run(ctx, userID) {
+    try {
+      if (!userID || ![546886852, 409482221].includes(ctx.from.id)) return;
+
+      const userDB = ctx.user;
+      const userData = await ctx.telegram.getChat(userID);
+
+      send(ctx, ctx.i18n.t('getUser', { userID, userDB, userData }), [backButton(ctx, 'start')]);
+    } catch (err) {
+      if (err.message.includes('chat not found')) {
+        send(ctx, ctx.i18n.t('errors.userBlocked'));
+      } else {
+        console.error(err);
+      }
+    }
   }
 };
