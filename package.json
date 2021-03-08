@@ -1,6 +1,6 @@
 {
   "name": "zno-trainer-bot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "src/index.js",
   "repository": "https://github.com/nieopierzony/table-quiz-bot.git",
   "author": "Philipp <43653566+bumagaga@users.noreply.github.com>",
@@ -14,7 +14,7 @@
     "mongo:prepare": "if not exist \"mongodb_tmp\" mkdir mongodb_tmp",
     "mongo:start": "yarn mongo:prepare && \"C:/Program Files/MongoDB/Server/4.4/bin/mongod\" --dbpath mongodb_tmp --logappend --logpath nul",
     "start:dev": "concurrently --kill-others -n 'bot,mongo' -c 'grenn,blue' \"yarn dev\" \"yarn mongo:start\"",
-    "dev": "set DB_URL=mongodb://localhost:27017/winslow-bot&& nodemon -w ./src",
+    "dev": "nodemon -w ./src",
     "start:prod": "node ."
   },
   "dependencies": {
