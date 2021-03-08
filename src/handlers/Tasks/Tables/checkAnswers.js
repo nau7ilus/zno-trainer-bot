@@ -53,17 +53,19 @@ module.exports = class extends Handler {
       table.writeAnswers(ctx.session.currentTask.answer);
       ctx.editMessageReplyMarkup({ inline_keyboard: table.rows });
 
-      clearCache(null, { id: ctx.from.id });
-      await User.findOneAndUpdate(
-        { id: ctx.from.id },
-        {
-          $inc: {
-            [`stats.${ctx.session.lobby}.totalAsked`]: 1,
-            [`stats.${ctx.session.lobby}.correctAnswers`]: correctAnswersPercent / 100,
-            [`stats.${ctx.session.lobby}.points`]: points,
+      if (!ctx.session.taskTag) {
+        clearCache(null, { id: ctx.from.id });
+        await User.findOneAndUpdate(
+          { id: ctx.from.id },
+          {
+            $inc: {
+              [`stats.${ctx.session.lobby}.totalAsked`]: 1,
+              [`stats.${ctx.session.lobby}.correctAnswers`]: correctAnswersPercent / 100,
+              [`stats.${ctx.session.lobby}.points`]: points,
+            },
           },
-        },
-      );
+        );
+      }
 
       ctx.session.currentTask = undefined;
       ctx.session.askedAt = undefined;
@@ -71,7 +73,7 @@ module.exports = class extends Handler {
       ctx.session.taskTag = undefined;
     } catch (err) {
       ctx.answerCbQuery(ctx.i18n.t(err.message));
-      console.error(err);
+      if (err.message !== 'errors.selectAllRows') console.error(err);
     }
   }
 };

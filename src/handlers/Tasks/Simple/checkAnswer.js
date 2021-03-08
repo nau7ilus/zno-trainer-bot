@@ -19,16 +19,18 @@ module.exports = class extends Handler {
     ctx.editMessageReplyMarkup();
 
     if (+ctx.match[1] === ctx.session.currentTask.answer) {
-      await User.findOneAndUpdate(
-        { id: ctx.from.id },
-        {
-          $inc: {
-            [`stats.${ctx.session.lobby}.totalAsked`]: 1,
-            [`stats.${ctx.session.lobby}.correctAnswers`]: 1,
-            [`stats.${ctx.session.lobby}.points`]: 1,
+      if (!ctx.session.taskTag) {
+        await User.findOneAndUpdate(
+          { id: ctx.from.id },
+          {
+            $inc: {
+              [`stats.${ctx.session.lobby}.totalAsked`]: 1,
+              [`stats.${ctx.session.lobby}.correctAnswers`]: 1,
+              [`stats.${ctx.session.lobby}.points`]: 1,
+            },
           },
-        },
-      );
+        );
+      }
 
       if (!ctx.session.alreadyAsked) ctx.session.alreadyAsked = [];
       ctx.session.alreadyAsked.push(ctx.session.currentTask.id);
@@ -37,7 +39,9 @@ module.exports = class extends Handler {
         nextTaskKeyboard(ctx),
       );
     } else {
-      await User.findOneAndUpdate({ id: ctx.from.id }, { $inc: { [`stats.${ctx.session.lobby}.totalAsked`]: 1 } });
+      if (!ctx.session.taskTag) {
+        await User.findOneAndUpdate({ id: ctx.from.id }, { $inc: { [`stats.${ctx.session.lobby}.totalAsked`]: 1 } });
+      }
       ctx.replyWithHTML(
         ctx.i18n.t('tasks.simple.wrong', {
           rightAnswer: alphabet[ctx.session.currentTask.answer],
