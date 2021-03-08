@@ -1,6 +1,7 @@
 'use strict';
 
 const { clearCache } = require('cachegoose');
+const { handleRateLimit } = require('../helpers');
 const User = require('../models/User');
 const Middleware = require('../structures/pieces/Middleware');
 
@@ -47,13 +48,14 @@ module.exports = class extends Middleware {
         return;
       }
 
-      ctx.telegram.sendMessage(
+      await ctx.telegram.sendMessage(
         channels.common,
         ctx.i18n.t('logs.common', { commandContent, actionType, btnName, user: ctx.user }),
         parseHTML,
       );
     } catch (err) {
-      console.error('[Error] Ошибка при добавлении данных в статистику', err);
+      if (err.code === 429) handleRateLimit(ctx, err);
+      else console.error('[Error] Ошибка при добавлении данных в статистику', err);
     }
 
     next();

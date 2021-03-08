@@ -139,11 +139,32 @@ const getThemes = ctx =>
     ),
   );
 
+const delayFor = ms =>
+  new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+
+const handleRateLimit = async (ctx, err) => {
+  const retryAfter = err.parameters.retry_after * 1000;
+  const task = err.on;
+
+  await delayFor(retryAfter);
+  try {
+    const { method, payload } = task;
+    await ctx.telegram.callApi(method, payload);
+  } catch (error) {
+    if (err.code === 429) handleRateLimit(ctx, err);
+    else console.error(error);
+  }
+};
+
 module.exports = {
   alphabet,
   mainMenu,
   languagesMenu,
   selectSubject,
+  handleRateLimit,
+  delayFor,
   selectTypes,
   send,
   backButton,
