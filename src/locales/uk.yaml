@@ -255,18 +255,18 @@ logs:
   newUser: |
     ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
 
-    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
+    👥 <a href="http://t.me/math_zno_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
     📕 Реферальный код: <code>${details[1] ?? 'Не указан'}</code>
     📋 Команда: <code>${actionType === 0 ? 'сообщение' : 'нажатие по кнопке'} - ${commandContent ?? 'Не указано'}</code>
   common: |
     ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
 
-    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
+    👥 <a href="http://t.me/math_zno_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
     📋 Команда: <code>${actionType === 0 ? 'сообщение' : 'нажатие по кнопке - ' + btnName} - ${commandContent ?? 'Не указано'}</code>
   newGame: |
     ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
 
-    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
+    👥 <a href="http://t.me/math_zno_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
     <b><code>🆔 - ${randomTask.id} - ${randomTask.subject === 1 ? '🧮 Алгебра' : '📐 Геометрия'} - ${theme}</code></b>
     📋 Ответ: <b>${randomTask.taskType === 0 ? alphabet[randomTask.answer] : randomTask.taskType === 1 ? 'Для этого типа задания ответов не будет' : randomTask.taskType === 2 ? randomTask.answer : randomTask.answer.join(' и ')}</b>
     <a href="${CDN_URL + '/' + randomTask.id + '/task.png'}">&#8203;</a>
@@ -274,5 +274,5 @@ logs:
     ⏰ <b>${new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</b>
 
     <b>Задание пропущено</b>
-    👥 <a href="http://t.me/gfdjglkjsldfgjldfgj_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
+    👥 <a href="http://t.me/math_zno_bot?start=getuser-${from.id}">${from.first_name ?? ''} ${from.last_name ?? ''}</a> ${from.username ? '(@' + from.username + ')' : ''} - <code>tg-${from.language_code ?? 'Не указан'} - bot-ua</code>
     <b><code>🆔 - ${task.id} - ${task.subject === 1 ? '🧮 Алгебра' : '📐 Геометрия'}</code></b>
