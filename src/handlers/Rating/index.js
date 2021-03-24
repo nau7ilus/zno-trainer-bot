@@ -42,7 +42,8 @@ module.exports = class extends Handler {
     const subject = ctx.match[1];
     const page = +ctx.match[2];
 
-    if (page > Math.floor(ctx.users.length / 10)) return ctx.answerCbQuery(ctx.i18n.t('rating.pageError'));
+    const totalPages = Math.floor(ctx.users.length / 10);
+    if (page > totalPages) return ctx.answerCbQuery(ctx.i18n.t('rating.pageError'));
 
     const rating = [];
     const userInfo = [];
@@ -78,12 +79,20 @@ module.exports = class extends Handler {
       ctx.i18n.t('rating.markup', { rating, userInfo, subjectName: ctx.i18n.t(`rating.subjects.${subject}`) }),
       [
         [
-          { text: page === 0 ? '•' : '«', callback_data: `rating::${subject}::${page === 0 ? 999 : page - 1}` },
-          { text: page + 1, callback_data: 'blank' },
+          ...(page === totalPages ? [{ text: '⏮️', callback_data: `rating::${subject}::0` }] : []),
+          { text: page === 0 ? '•' : '◀️', callback_data: `rating::${subject}::${page === 0 ? 999 : page - 1}` },
+          { text: `${page + 1} / ${totalPages + 1}`, callback_data: 'blank' },
           {
-            text: page === Math.floor(ctx.users.length / 10) ? '•' : '»',
+            text: page === totalPages ? '•' : '▶️',
             callback_data: `rating::${subject}::${page + 1}`,
           },
+          ...(page === 0 ? [{ text: '⏭️', callback_data: `rating::${subject}::${totalPages}` }] : []),
+        ],
+        [
+          ...(page !== 0 && page !== totalPages ? [{ text: '⏮️', callback_data: `rating::${subject}::0` }] : []),
+          ...(page !== 0 && page !== totalPages
+            ? [{ text: '⏭️', callback_data: `rating::${subject}::${totalPages}` }]
+            : []),
         ],
         backButton(ctx, 'rating'),
       ],
