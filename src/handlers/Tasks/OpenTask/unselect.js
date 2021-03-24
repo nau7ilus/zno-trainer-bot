@@ -19,6 +19,7 @@ module.exports = class extends Handler {
 
     try {
       openTask.unselectAnswer(ctx.match[1]);
+      ctx.scene.leave('checkOpenTask');
       ctx.editMessageReplyMarkup(openTask.keyboard.reply_markup);
     } catch (err) {
       console.error(err.message);
