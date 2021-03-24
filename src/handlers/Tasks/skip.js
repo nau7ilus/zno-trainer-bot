@@ -24,10 +24,6 @@ module.exports = class extends Handler {
         await User.findOneAndUpdate({ id: ctx.from.id }, { $inc: { [`stats.${ctx.session.lobby}.totalAsked`]: 1 } });
       }
 
-      ctx.session.currentTask = undefined;
-      ctx.session.askedAt = undefined;
-      ctx.session.openTaskData = undefined;
-
       const backBtn = ctx.update?.callback_query?.message.entities
         ? ctx.update?.callback_query?.message.entities[0].url?.split('t.me/')[1]
         : ctx.session.backBtn;
@@ -54,6 +50,10 @@ module.exports = class extends Handler {
         }),
         { parse_mode: 'HTML' },
       );
+
+      ctx.session.currentTask = undefined;
+      ctx.session.askedAt = undefined;
+      ctx.session.openTaskData = undefined;
     } catch (err) {
       if (err.code === 429) handleRateLimit(ctx, err);
       else console.error('[Error] Ошибка при пропуске задания', err);
