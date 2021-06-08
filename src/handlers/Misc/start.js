@@ -15,7 +15,7 @@ module.exports = class extends Handler {
     if (!ctx.user.isLanguageSet) {
       send(ctx, ctx.i18n.t('greeting.firstTime'), languagesMenu);
     } else {
-      const toExam = Math.round((new Date('2021-05-28').getTime() - Date.now()) / (1000 * 3600 * 24));
+      const toExam = Math.round((new Date('2022-05-28').getTime() - Date.now()) / (1000 * 3600 * 24));
       send(ctx, ctx.i18n.t('greeting.other', { toExam }), mainMenu(ctx));
     }
   }
