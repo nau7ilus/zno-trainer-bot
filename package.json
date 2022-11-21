@@ -24,7 +24,7 @@
     "cachegoose": "^8.0.0",
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
-    "fastify": "^3.6.0",
+    "fastify": "^3.29.4",
     "fastify-cors": "^4.1.0",
     "if-env": "^1.0.4",
     "mongoose": "^5.10.5",
